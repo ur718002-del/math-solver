@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Solver - Created by Umar Rehman</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono-code {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col transition-colors duration-300 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/80 border-b border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 ring-2 ring-white/10 animate-pulse">
+                    <i data-lucide="sigma" class="w-7 h-7 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+                        Math Solver
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        Created by <span class="text-indigo-400 font-semibold">Umar Rehman</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button id="history-toggle" class="relative p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition-all shadow-sm flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="history" class="w-4 h-4 text-indigo-400"></i>
+                    <span class="hidden sm:inline">History</span>
+                    <span id="history-badge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+                <button id="theme-toggle" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-yellow-400 border border-slate-700/60 transition-all shadow-sm">
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-indigo-600"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation (Categories) -->
+        <aside class="lg:col-span-1 space-y-2">
+            <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-3">Categories</div>
+            <nav id="category-nav" class="space-y-1.5">
+                <button data-cat="algebra" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left bg-indigo-600 text-white shadow-lg shadow-indigo-600/25">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="function-square" class="w-5 h-5"></i>
+                        <span>Algebra</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+
+                <button data-cat="trigonometry" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left text-slate-400 hover:bg-slate-800/60 hover:text-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="triangle" class="w-5 h-5"></i>
+                        <span>Trigonometry</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+
+                <button data-cat="geometry" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left text-slate-400 hover:bg-slate-800/60 hover:text-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="shapes" class="w-5 h-5"></i>
+                        <span>Geometry & Mensuration</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+
+                <button data-cat="finance" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left text-slate-400 hover:bg-slate-800/60 hover:text-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                        <span>Banking & Finance</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+
+                <button data-cat="advanced" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left text-slate-400 hover:bg-slate-800/60 hover:text-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="cpu" class="w-5 h-5"></i>
+                        <span>General & Advanced</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+
+                <button data-cat="graphing" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all text-left text-slate-400 hover:bg-slate-800/60 hover:text-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="line-chart" class="w-5 h-5"></i>
+                        <span>Function Plotter</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-70"></i>
+                </button>
+            </nav>
+
+            <div class="mt-8 p-4 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-800/40 border border-slate-700/50 text-xs text-slate-400 space-y-2">
+                <div class="font-semibold text-slate-200 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-yellow-400"></i>
+                    <span>Pro Features Active</span>
+                </div>
+                <p>Step-by-step solver enabled with instant formatting and export capabilities.</p>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <section class="lg:col-span-3 space-y-6">
+            
+            <!-- ALGEBRA SECTION -->
+            <div id="section-algebra" class="calc-section space-y-6">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="function-square" class="w-6 h-6 text-indigo-400"></i>
+                        Algebra Calculator Suite
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Choose a submodule to perform quadratic, linear, factorizations, or exponent calculations.</p>
+                    
+                    <!-- Sub-tabs -->
+                    <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-700/60 pb-4">
+                        <button onclick="switchAlgebraTab('quadratic')" class="alg-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md">Quadratic Equation</button>
+                        <button onclick="switchAlgebraTab('linear')" class="alg-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Linear System (2x2)</button>
+                        <button onclick="switchAlgebraTab('exponent')" class="alg-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Exponents & Logs</button>
+                        <button onclick="switchAlgebraTab('factor')" class="alg-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Simplify / Factor</button>
+                    </div>
+
+                    <!-- Quadratic Solver Panel -->
+                    <div id="alg-quadratic" class="alg-panel space-y-4">
+                        <div class="text-sm font-medium text-slate-300">Form: $ax^2 + bx + c = 0$</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Coefficient a</label>
+                                <input type="number" id="quad-a" value="1" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Coefficient b</label>
+                                <input type="number" id="quad-b" value="-5" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Coefficient c</label>
+                                <input type="number" id="quad-c" value="6" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono-code">
+                            </div>
+                        </div>
+                        <button onclick="solveQuadratic()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="calculator" class="w-5 h-5"></i>
+                            Calculate Roots & Steps
+                        </button>
+                    </div>
+
+                    <!-- Linear Solver Panel -->
+                    <div id="alg-linear" class="alg-panel hidden space-y-4">
+                        <div class="text-sm font-medium text-slate-300">System of 2 Equations: $ax + by = c$ and $dx + ey = f$</div>
+                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                            <div><label class="block text-xs text-slate-400 mb-1">a₁</label><input type="number" id="lin-a1" value="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                            <div><label class="block text-xs text-slate-400 mb-1">b₁</label><input type="number" id="lin-b1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                            <div><label class="block text-xs text-slate-400 mb-1">c₁</label><input type="number" id="lin-c1" value="8" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                            <div><label class="block text-xs text-slate-400 mb-1">a₂</label><input type="number" id="lin-a2" value="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                            <div><label class="block text-xs text-slate-400 mb-1">b₂</label><input type="number" id="lin-b2" value="-2" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                            <div><label class="block text-xs text-slate-400 mb-1">c₂</label><input type="number" id="lin-c2" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code"></div>
+                        </div>
+                        <button onclick="solveLinear()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="calculator" class="w-5 h-5"></i> Solve System for (x, y)
+                        </button>
+                    </div>
+
+                    <!-- Exponents & Logs Panel -->
+                    <div id="alg-exponent" class="alg-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700/60 space-y-3">
+                                <h3 class="font-semibold text-indigo-400 text-sm">Power Calculator ($base^{exp}$)</h3>
+                                <div class="flex gap-3">
+                                    <input type="number" id="exp-base" placeholder="Base" value="2" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                    <input type="number" id="exp-power" placeholder="Exponent" value="8" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                </div>
+                                <button onclick="calculatePower()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-sm">Calculate Power</button>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-700/60 space-y-3">
+                                <h3 class="font-semibold text-indigo-400 text-sm">Logarithm Calculator ($\log_{base}(x)$)</h3>
+                                <div class="flex gap-3">
+                                    <input type="number" id="log-base" placeholder="Base (e.g. 10)" value="10" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                    <input type="number" id="log-val" placeholder="Value x" value="1000" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                </div>
+                                <button onclick="calculateLog()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-sm">Calculate Log</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Factorization / Simplify Panel -->
+                    <div id="alg-factor" class="alg-panel hidden space-y-4">
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Enter expression or number for Prime Factors / GCD</label>
+                        <input type="text" id="factor-input" value="360" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                        <button onclick="calculateFactors()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Find Prime Factors</button>
+                    </div>
+
+                </div>
+
+                <!-- Result Box -->
+                <div id="algebra-result" class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+                        <span>Solution & Step-by-Step Breakdown</span>
+                        <button onclick="copyResult('algebra-result-content')" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy</button>
+                    </h3>
+                    <div id="algebra-result-content" class="space-y-3 font-mono-code text-sm text-slate-200"></div>
+                </div>
+            </div>
+
+            <!-- TRIGONOMETRY SECTION -->
+            <div id="section-trigonometry" class="calc-section space-y-6 hidden">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="triangle" class="w-6 h-6 text-indigo-400"></i>
+                        Trigonometry Suite
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Calculate trigonometric ratios, solve triangles, convert angles, or apply Pythagorean theorem.</p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-700/60 pb-4">
+                        <button onclick="switchTrigTab('ratios')" class="trig-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md">Angle Ratios</button>
+                        <button onclick="switchTrigTab('pyth')" class="trig-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Pythagorean Theorem</button>
+                        <button onclick="switchTrigTab('converter')" class="trig-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Degree & Radian</button>
+                    </div>
+
+                    <!-- Ratios Panel -->
+                    <div id="trig-ratios" class="trig-panel space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Angle Value</label>
+                                <input type="number" id="trig-angle" value="45" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Unit</label>
+                                <select id="trig-unit" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+                                    <option value="deg">Degrees</option>
+                                    <option value="rad">Radians</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="calculateTrigRatios()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Sin, Cos, Tan, Csc, Sec, Cot</button>
+                    </div>
+
+                    <!-- Pythagorean Panel -->
+                    <div id="trig-pyth" class="trig-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Side A (Leave blank to calculate)</label>
+                                <input type="number" id="pyth-a" placeholder="e.g. 3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Side B (Leave blank to calculate)</label>
+                                <input type="number" id="pyth-b" placeholder="e.g. 4" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Hypotenuse c (Leave blank to calculate)</label>
+                                <input type="number" id="pyth-c" placeholder="e.g. 5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                        </div>
+                        <button onclick="calculatePythagoras()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Missing Side</button>
+                    </div>
+
+                    <!-- Converter Panel -->
+                    <div id="trig-converter" class="trig-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Degrees (°)</label>
+                                <input type="number" id="conv-deg" value="180" oninput="convertAngle('deg')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Radians (rad)</label>
+                                <input type="number" id="conv-rad" value="3.14159" oninput="convertAngle('rad')" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="trigonometry-result" class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Trigonometry Results</h3>
+                    <div id="trigonometry-result-content" class="space-y-2 font-mono-code text-sm text-slate-200"></div>
+                </div>
+            </div>
+
+            <!-- GEOMETRY SECTION -->
+            <div id="section-geometry" class="calc-section space-y-6 hidden">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="shapes" class="w-6 h-6 text-indigo-400"></i>
+                        Geometry & Mensuration
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Calculate area, perimeter, and volume for 2D and 3D shapes with formula breakdown.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Select Shape</label>
+                            <select id="geom-shape" onchange="updateGeometryInputs()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+                                <option value="circle">Circle (2D)</option>
+                                <option value="rectangle">Rectangle (2D)</option>
+                                <option value="triangle">Triangle (2D)</option>
+                                <option value="cylinder">Cylinder (3D)</option>
+                                <option value="sphere">Sphere (3D)</option>
+                                <option value="cone">Cone (3D)</option>
+                            </select>
+                        </div>
+                        <div id="geom-input-1-container">
+                            <label id="label-input-1" class="block text-xs font-medium text-slate-400 mb-1">Radius (r)</label>
+                            <input type="number" id="geom-val-1" value="5" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                        </div>
+                        <div id="geom-input-2-container" class="hidden">
+                            <label id="label-input-2" class="block text-xs font-medium text-slate-400 mb-1">Height (h)</label>
+                            <input type="number" id="geom-val-2" value="10" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                        </div>
+                    </div>
+                    <button onclick="calculateGeometry()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Properties & Formulas</button>
+                </div>
+
+                <div id="geometry-result" class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Geometry Calculations</h3>
+                    <div id="geometry-result-content" class="space-y-3 font-mono-code text-sm text-slate-200"></div>
+                </div>
+            </div>
+
+            <!-- BANKING & FINANCE SECTION -->
+            <div id="section-finance" class="calc-section space-y-6 hidden">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="landmark" class="w-6 h-6 text-indigo-400"></i>
+                        Banking & Finance Calculators
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Plan your loans, compound interest investments, and financial percentages.</p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-700/60 pb-4">
+                        <button onclick="switchFinanceTab('interest')" class="fin-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md">Interest & Compound</button>
+                        <button onclick="switchFinanceTab('emi')" class="fin-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Loan EMI Calculator</button>
+                        <button onclick="switchFinanceTab('percent')" class="fin-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Percentage Tool</button>
+                    </div>
+
+                    <!-- Interest Panel -->
+                    <div id="fin-interest" class="fin-panel space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Principal Amount ($)</label>
+                                <input type="number" id="fin-p" value="10000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Annual Rate (%)</label>
+                                <input type="number" id="fin-r" value="7.5" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Time (Years)</label>
+                                <input type="number" id="fin-t" value="5" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                        </div>
+                        <button onclick="calculateInterest()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Simple & Compound Interest</button>
+                    </div>
+
+                    <!-- EMI Panel -->
+                    <div id="fin-emi" class="fin-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Loan Amount ($)</label>
+                                <input type="number" id="emi-p" value="250000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Interest Rate (% p.a.)</label>
+                                <input type="number" id="emi-r" value="8.5" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Tenure (Months)</label>
+                                <input type="number" id="emi-n" value="360" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                        </div>
+                        <button onclick="calculateEMI()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Monthly EMI & Total Payment</button>
+                    </div>
+
+                    <!-- Percentage Panel -->
+                    <div id="fin-percent" class="fin-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">What is X% of Y?</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="pct-x" value="15" placeholder="X" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                    <input type="number" id="pct-y" value="200" placeholder="Y" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                </div>
+                                <button onclick="calcPercentage('part')" class="w-full mt-2 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm">Calculate Part</button>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Percentage Change (From A to B)</label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="pct-a" value="80" placeholder="Initial A" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                    <input type="number" id="pct-b" value="100" placeholder="Final B" class="w-1/2 bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white font-mono-code">
+                                </div>
+                                <button onclick="calcPercentage('change')" class="w-full mt-2 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm">Calculate % Change</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="finance-result" class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Financial Breakdown</h3>
+                    <div id="finance-result-content" class="space-y-3 font-mono-code text-sm text-slate-200"></div>
+                </div>
+            </div>
+
+            <!-- ADVANCED & GENERAL SECTION -->
+            <div id="section-advanced" class="calc-section space-y-6 hidden">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="cpu" class="w-6 h-6 text-indigo-400"></i>
+                        General & Advanced Math Utilities
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Perform Matrix operations, GCD/LCM analysis, Prime checking, and unit conversions.</p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-700/60 pb-4">
+                        <button onclick="switchAdvTab('matrix')" class="adv-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-indigo-600 text-white shadow-md">Matrix Determinant (2x2)</button>
+                        <button onclick="switchAdvTab('gcd')" class="adv-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">GCD & LCM</button>
+                        <button onclick="switchAdvTab('prime')" class="adv-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-800 text-slate-400 hover:text-white">Prime Checker</button>
+                    </div>
+
+                    <!-- Matrix Panel -->
+                    <div id="adv-matrix" class="adv-panel space-y-4">
+                        <div class="text-sm font-medium text-slate-300">Enter 2x2 Matrix Elements:</div>
+                        <div class="grid grid-cols-2 gap-4 max-w-xs mx-auto">
+                            <input type="number" id="m00" value="4" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-white font-mono-code">
+                            <input type="number" id="m01" value="6" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-white font-mono-code">
+                            <input type="number" id="m10" value="3" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-white font-mono-code">
+                            <input type="number" id="m11" value="8" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-white font-mono-code">
+                        </div>
+                        <button onclick="calculateMatrix()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate Determinant & Trace</button>
+                    </div>
+
+                    <!-- GCD & LCM Panel -->
+                    <div id="adv-gcd" class="adv-panel hidden space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Number A</label>
+                                <input type="number" id="gcd-a" value="48" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Number B</label>
+                                <input type="number" id="gcd-b" value="18" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                            </div>
+                        </div>
+                        <button onclick="calculateGcdLcm()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Calculate GCD and LCM</button>
+                    </div>
+
+                    <!-- Prime Panel -->
+                    <div id="adv-prime" class="adv-panel hidden space-y-4">
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Check if Number is Prime</label>
+                        <input type="number" id="prime-num" value="97" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono-code">
+                        <button onclick="checkPrime()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all">Check Primality</button>
+                    </div>
+                </div>
+
+                <div id="advanced-result" class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl hidden">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Utility Calculation Result</h3>
+                    <div id="advanced-result-content" class="space-y-3 font-mono-code text-sm text-slate-200"></div>
+                </div>
+            </div>
+
+            <!-- FUNCTION PLOTTER SECTION -->
+            <div id="section-graphing" class="calc-section space-y-6 hidden">
+                <div class="bg-slate-800/60 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 shadow-xl space-y-4">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="line-chart" class="w-6 h-6 text-indigo-400"></i>
+                        Interactive Function Plotter
+                    </h2>
+                    <p class="text-sm text-slate-400">Visualize mathematical functions like $sin(x)$, $x^2$, $e^x$, or $\log(x)$ in real time on the interactive canvas.</p>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="flex-1">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Function f(x)</label>
+                            <select id="graph-func-select" onchange="plotGraph()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+                                <option value="x2">f(x) = x² - 4</option>
+                                <option value="sin">f(x) = sin(x) * 3</option>
+                                <option value="cubic">f(x) = 0.1x³ - 2x</option>
+                                <option value="exp">f(x) = 2^(0.5x)</option>
+                            </select>
+                        </div>
+                        <button onclick="plotGraph()" class="mt-5 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all">Render Plot</button>
+                    </div>
+
+                    <div class="relative w-full h-80 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center">
+                        <canvas id="function-canvas" class="w-full h-full cursor-crosshair"></canvas>
+                        <div class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-slate-400 font-mono-code">
+                            Grid: 20px units | Scale: 1:10
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- History Drawer Modal -->
+    <div id="history-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="history" class="w-5 h-5 text-indigo-400"></i>
+                    <h3 class="text-lg font-bold text-white">Calculation History</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportHistory()" class="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 text-xs font-semibold rounded-lg border border-indigo-500/30 transition-all flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i> Export JSON</button>
+                    <button onclick="clearHistory()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 text-xs font-semibold rounded-lg border border-rose-500/30 transition-all">Clear All</button>
+                    <button onclick="toggleHistoryModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+            </div>
+            <div id="history-list" class="p-6 overflow-y-auto space-y-3 flex-1 font-mono-code text-sm">
+                <p class="text-slate-500 text-center py-8">No calculations saved yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-900/90 py-8 text-center text-sm text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="sigma" class="w-5 h-5 text-indigo-400"></i>
+                <span class="font-bold text-slate-200">Math Solver Web Application</span>
+            </div>
+            <p class="text-xs">
+                Created with precision and passion by <span class="text-indigo-400 font-semibold">Umar Rehman</span>. &copy; 2026 All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // Initialize Lucide Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setupNavigation();
+            plotGraph();
+        });
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+            } else {
+                html.classList.add('dark');
+            }
+        });
+
+        // History Storage Array
+        let calcHistory = [];
+
+        function saveToHistory(title, inputStr, resultStr) {
+            const entry = {
+                id: Date.now(),
+                title: title,
+                input: inputStr,
+                result: resultStr,
+                time: new Date().toLocaleTimeString()
+            };
+            calcHistory.unshift(entry);
+            updateHistoryUI();
+        }
+
+        function updateHistoryUI() {
+            const badge = document.getElementById('history-badge');
+            const list = document.getElementById('history-list');
+            
+            if (calcHistory.length > 0) {
+                badge.textContent = calcHistory.length;
+                badge.classList.remove('hidden');
+                list.innerHTML = calcHistory.map(item => `
+                    <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-2">
+                        <div class="flex items-center justify-between text-xs text-indigo-400 font-semibold">
+                            <span>${item.title}</span>
+                            <span class="text-slate-500">${item.time}</span>
+                        </div>
+                        <div class="text-slate-300 text-xs">Input: ${item.input}</div>
+                        <div class="text-emerald-400 font-semibold text-xs">Result: ${item.result}</div>
+                    </div>
+                `).join('');
+            } else {
+                badge.classList.add('hidden');
+                list.innerHTML = `<p class="text-slate-500 text-center py-8">No calculations saved yet.</p>`;
+            }
+        }
+
+        const historyModal = document.getElementById('history-modal');
+        document.getElementById('history-toggle').addEventListener('click', () => {
+            historyModal.classList.toggle('hidden');
+        });
+
+        function toggleHistoryModal() {
+            historyModal.classList.add('hidden');
+        }
+
+        function clearHistory() {
+            calcHistory = [];
+            updateHistoryUI();
+        }
+
+        function exportHistory() {
+            if (calcHistory.length === 0) return;
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(calcHistory, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "math_solver_history_umar_rehman.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // Navigation Switcher
+        function setupNavigation() {
+            const buttons = document.querySelectorAll('.category-btn');
+            const sections = document.querySelectorAll('.calc-section');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => {
+                        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/25');
+                        b.classList.add('text-slate-400', 'hover:bg-slate-800/60', 'hover:text-slate-200');
+                    });
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-600/25');
+                    btn.classList.remove('text-slate-400', 'hover:bg-slate-800/60', 'hover:text-slate-200');
+
+                    const cat = btn.getAttribute('data-cat');
+                    sections.forEach(sec => sec.classList.add('hidden'));
+                    document.getElementById(`section-${cat}`).classList.remove('hidden');
+
+                    if (cat === 'graphing') {
+                        setTimeout(plotGraph, 50);
+                    }
+                });
+            });
+        }
+
+        // Sub-tab switchers
+        function switchAlgebraTab(tab) {
+            document.querySelectorAll('.alg-tab').forEach(t => {
+                t.classList.replace('bg-indigo-600', 'bg-slate-800');
+                t.classList.replace('text-white', 'text-slate-400');
+            });
+            event.target.classList.replace('bg-slate-800', 'bg-indigo-600');
+            event.target.classList.replace('text-slate-400', 'text-white');
+
+            document.querySelectorAll('.alg-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`alg-${tab}`).classList.remove('hidden');
+        }
+
+        function switchTrigTab(tab) {
+            document.querySelectorAll('.trig-tab').forEach(t => {
+                t.classList.replace('bg-indigo-600', 'bg-slate-800');
+                t.classList.replace('text-white', 'text-slate-400');
+            });
+            event.target.classList.replace('bg-slate-800', 'bg-indigo-600');
+            event.target.classList.replace('text-slate-400', 'text-white');
+
+            document.querySelectorAll('.trig-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`trig-${tab}`).classList.remove('hidden');
+        }
+
+        function switchFinanceTab(tab) {
+            document.querySelectorAll('.fin-tab').forEach(t => {
+                t.classList.replace('bg-indigo-600', 'bg-slate-800');
+                t.classList.replace('text-white', 'text-slate-400');
+            });
+            event.target.classList.replace('bg-slate-800', 'bg-indigo-600');
+            event.target.classList.replace('text-slate-400', 'text-white');
+
+            document.querySelectorAll('.fin-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`fin-${tab}`).classList.remove('hidden');
+        }
+
+        function switchAdvTab(tab) {
+            document.querySelectorAll('.adv-tab').forEach(t => {
+                t.classList.replace('bg-indigo-600', 'bg-slate-800');
+                t.classList.replace('text-white', 'text-slate-400');
+            });
+            event.target.classList.replace('bg-slate-800', 'bg-indigo-600');
+            event.target.classList.replace('text-slate-400', 'text-white');
+
+            document.querySelectorAll('.adv-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`adv-${tab}`).classList.remove('hidden');
+        }
+
+        // --- ALGEBRA CALCULATIONS ---
+        function solveQuadratic() {
+            const a = parseFloat(document.getElementById('quad-a').value);
+            const b = parseFloat(document.getElementById('quad-b').value);
+            const c = parseFloat(document.getElementById('quad-c').value);
+
+            const resDiv = document.getElementById('algebra-result');
+            const contentDiv = document.getElementById('algebra-result-content');
+            resDiv.classList.remove('hidden');
+
+            const disc = b * b - 4 * a * c;
+            let steps = `<p class="text-indigo-400 font-bold">Equation: ${a}x² + (${b})x + (${c}) = 0</p>`;
+            steps += `<p>1. Calculate Discriminant ($\Delta$): $b^2 - 4ac = (${b})^2 - 4(${a})(${c}) = ${disc}</p>`;
+
+            let rootsMsg = '';
+            if (disc > 0) {
+                const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                rootsMsg = `Two distinct real roots: x₁ = ${r1.toFixed(4)}, x₂ = ${r2.toFixed(4)}`;
+                steps += `<p>2. Two real solutions found using quadratic formula $x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$</p>`;
+                steps += `<p class="text-emerald-400">-> Root 1 = ${r1.toFixed(4)}<br>-> Root 2 = ${r2.toFixed(4)}</p>`;
+            } else if (disc === 0) {
+                const r = -b / (2 * a);
+                rootsMsg = `One repeated real root: x = ${r.toFixed(4)}`;
+                steps += `<p>2. Discriminant is zero. Single repeated root $x = \\frac{-b}{2a}$</p>`;
+                steps += `<p class="text-emerald-400">-> Root = ${r.toFixed(4)}</p>`;
+            } else {
+                const realPart = (-b / (2 * a)).toFixed(4);
+                const imagPart = (Math.sqrt(-disc) / (2 * a)).toFixed(4);
+                rootsMsg = `Complex roots: ${realPart} ± ${imagPart}i`;
+                steps += `<p>2. Discriminant is negative. Complex roots present.</p>`;
+                steps += `<p class="text-emerald-400">-> Roots = ${realPart} ± ${imagPart}i</p>`;
+            }
+
+            contentDiv.innerHTML = steps;
+            saveToHistory("Quadratic Equation", `a=${a}, b=${b}, c=${c}`, rootsMsg);
+        }
+
+        function solveLinear() {
+            const a1 = parseFloat(document.getElementById('lin-a1').value);
+            const b1 = parseFloat(document.getElementById('lin-b1').value);
+            const c1 = parseFloat(document.getElementById('lin-c1').value);
+            const a2 = parseFloat(document.getElementById('lin-a2').value);
+            const b2 = parseFloat(document.getElementById('lin-b2').value);
+            const c2 = parseFloat(document.getElementById('lin-c2').value);
+
+            const resDiv = document.getElementById('algebra-result');
+            const contentDiv = document.getElementById('algebra-result-content');
+            resDiv.classList.remove('hidden');
+
+            const det = a1 * b2 - a2 * b1;
+            if (det === 0) {
+                contentDiv.innerHTML = `<p class="text-rose-400">Determinant is zero. No unique solution exists (lines are parallel or coincident).</p>`;
+                return;
+            }
+
+            const x = (c1 * b2 - c2 * b1) / det;
+            const y = (a1 * c2 - a2 * c1) / det;
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">Cramer's Rule / Elimination Solver</p>
+                <p>Determinant D = ${det}</p>
+                <p class="text-emerald-400 font-bold">-> x = ${x.toFixed(4)}</p>
+                <p class="text-emerald-400 font-bold">-> y = ${y.toFixed(4)}</p>
+            `;
+            saveToHistory("Linear System 2x2", `Eq1: ${a1}x+${b1}y=${c1}`, `x=${x.toFixed(2)}, y=${y.toFixed(2)}`);
+        }
+
+        function calculatePower() {
+            const base = parseFloat(document.getElementById('exp-base').value);
+            const power = parseFloat(document.getElementById('exp-power').value);
+            const res = Math.pow(base, power);
+
+            const resDiv = document.getElementById('algebra-result');
+            const contentDiv = document.getElementById('algebra-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `<p class="text-indigo-400">${base}<sup>${power}</sup> = <span class="text-emerald-400 font-bold">${res}</span></p>`;
+            saveToHistory("Exponentiation", `${base}^${power}`, `${res}`);
+        }
+
+        function calculateLog() {
+            const base = parseFloat(document.getElementById('log-base').value);
+            const val = parseFloat(document.getElementById('log-val').value);
+            const res = Math.log(val) / Math.log(base);
+
+            const resDiv = document.getElementById('algebra-result');
+            const contentDiv = document.getElementById('algebra-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `<p class="text-indigo-400">log<sub>${base}</sub>(${val}) = <span class="text-emerald-400 font-bold">${res.toFixed(6)}</span></p>`;
+            saveToHistory("Logarithm", `log_${base}(${val})`, `${res.toFixed(4)}`);
+        }
+
+        function calculateFactors() {
+            let n = parseInt(document.getElementById('factor-input').value);
+            const resDiv = document.getElementById('algebra-result');
+            const contentDiv = document.getElementById('algebra-result-content');
+            resDiv.classList.remove('hidden');
+
+            let temp = n;
+            let factors = [];
+            let divisor = 2;
+            while (temp > 1) {
+                while (temp % divisor === 0) {
+                    factors.push(divisor);
+                    temp /= divisor;
+                }
+                divisor++;
+                if (divisor * divisor > temp && temp > 1) {
+                    factors.push(temp);
+                    break;
+                }
+            }
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400">Prime Factorization of ${n}:</p>
+                <p class="text-emerald-400 font-bold">-> ${factors.join(' × ')}</p>
+            `;
+            saveToHistory("Prime Factors", `${n}`, factors.join('x'));
+        }
+
+        // --- TRIGONOMETRY CALCULATIONS ---
+        function calculateTrigRatios() {
+            let angle = parseFloat(document.getElementById('trig-angle').value);
+            const unit = document.getElementById('trig-unit').value;
+
+            let rad = unit === 'deg' ? angle * (Math.PI / 180) : angle;
+            let deg = unit === 'rad' ? angle * (180 / Math.PI) : angle;
+
+            const sinVal = Math.sin(rad);
+            const cosVal = Math.cos(rad);
+            const tanVal = Math.tan(rad);
+            const cscVal = 1 / sinVal;
+            const secVal = 1 / cosVal;
+            const cotVal = 1 / tanVal;
+
+            const resDiv = document.getElementById('trigonometry-result');
+            const contentDiv = document.getElementById('trigonometry-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400">Angle: ${angle}° (${deg.toFixed(2)}° / ${rad.toFixed(4)} rad)</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Sin: <span class="text-emerald-400 font-bold">${sinVal.toFixed(4)}</span></div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Cos: <span class="text-emerald-400 font-bold">${cosVal.toFixed(4)}</span></div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Tan: <span class="text-emerald-400 font-bold">${Math.abs(tanVal) > 1e10 ? 'Infinity' : tanVal.toFixed(4)}</span></div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Csc: <span class="text-emerald-400 font-bold">${cscVal.toFixed(4)}</span></div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Sec: <span class="text-emerald-400 font-bold">${secVal.toFixed(4)}</span></div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700">Cot: <span class="text-emerald-400 font-bold">${cotVal.toFixed(4)}</span></div>
+                </div>
+            `;
+            saveToHistory("Trig Ratios", `${angle} ${unit}`, `Sin:${sinVal.toFixed(2)}, Cos:${cosVal.toFixed(2)}`);
+        }
+
+        function calculatePythagoras() {
+            let a = document.getElementById('pyth-a').value;
+            let b = document.getElementById('pyth-b').value;
+            let c = document.getElementById('pyth-c').value;
+
+            const resDiv = document.getElementById('trigonometry-result');
+            const contentDiv = document.getElementById('trigonometry-result-content');
+            resDiv.classList.remove('hidden');
+
+            let resText = '';
+            if (a === '' && b !== '' && c !== '') {
+                let ans = Math.sqrt(Math.pow(parseFloat(c), 2) - Math.pow(parseFloat(b), 2));
+                resText = `Calculated Side A = ${ans.toFixed(4)}`;
+            } else if (b === '' && a !== '' && c !== '') {
+                let ans = Math.sqrt(Math.pow(parseFloat(c), 2) - Math.pow(parseFloat(a), 2));
+                resText = `Calculated Side B = ${ans.toFixed(4)}`;
+            } else if (c === '' && a !== '' && b !== '') {
+                let ans = Math.sqrt(Math.pow(parseFloat(a), 2) + Math.pow(parseFloat(b), 2));
+                resText = `Calculated Hypotenuse C = ${ans.toFixed(4)}`;
+            } else {
+                resText = `Please leave exactly one field empty to calculate.`;
+            }
+
+            contentDiv.innerHTML = `<p class="text-emerald-400 font-bold">${resText}</p>`;
+            saveToHistory("Pythagorean Theorem", `a=${a}, b=${b}, c=${c}`, resText);
+        }
+
+        function convertAngle(type) {
+            if (type === 'deg') {
+                let deg = parseFloat(document.getElementById('conv-deg').value);
+                document.getElementById('conv-rad').value = (deg * (Math.PI / 180)).toFixed(5);
+            } else {
+                let rad = parseFloat(document.getElementById('conv-rad').value);
+                document.getElementById('conv-deg').value = (rad * (180 / Math.PI)).toFixed(2);
+            }
+        }
+
+        // --- GEOMETRY CALCULATIONS ---
+        function updateGeometryInputs() {
+            const shape = document.getElementById('geom-shape').value;
+            const container2 = document.getElementById('geom-input-2-container');
+            const label1 = document.getElementById('label-input-1');
+            const label2 = document.getElementById('label-input-2');
+
+            if (shape === 'circle' || shape === 'sphere') {
+                container2.classList.add('hidden');
+                label1.textContent = "Radius (r)";
+            } else if (shape === 'rectangle') {
+                container2.classList.remove('hidden');
+                label1.textContent = "Length (l)";
+                label2.textContent = "Width (w)";
+            } else if (shape === 'triangle') {
+                container2.classList.remove('hidden');
+                label1.textContent = "Base (b)";
+                label2.textContent = "Height (h)";
+            } else if (shape === 'cylinder' || shape === 'cone') {
+                container2.classList.remove('hidden');
+                label1.textContent = "Radius (r)";
+                label2.textContent = "Height (h)";
+            }
+        }
+
+        function calculateGeometry() {
+            const shape = document.getElementById('geom-shape').value;
+            const v1 = parseFloat(document.getElementById('geom-val-1').value);
+            const v2 = parseFloat(document.getElementById('geom-val-2').value);
+
+            const resDiv = document.getElementById('geometry-result');
+            const contentDiv = document.getElementById('geometry-result-content');
+            resDiv.classList.remove('hidden');
+
+            let out = '';
+            if (shape === 'circle') {
+                let area = Math.PI * v1 * v1;
+                let peri = 2 * Math.PI * v1;
+                out = `<p>Shape: Circle</p><p>Area = $\\pi r^2$ = <span class="text-emerald-400 font-bold">${area.toFixed(4)}</span></p><p>Circumference = $2\\pi r$ = <span class="text-emerald-400 font-bold">${peri.toFixed(4)}</span></p>`;
+            } else if (shape === 'rectangle') {
+                let area = v1 * v2;
+                let peri = 2 * (v1 + v2);
+                out = `<p>Shape: Rectangle</p><p>Area = l × w = <span class="text-emerald-400 font-bold">${area.toFixed(4)}</span></p><p>Perimeter = 2(l + w) = <span class="text-emerald-400 font-bold">${peri.toFixed(4)}</span></p>`;
+            } else if (shape === 'triangle') {
+                let area = 0.5 * v1 * v2;
+                out = `<p>Shape: Triangle</p><p>Area = 0.5 × base × height = <span class="text-emerald-400 font-bold">${area.toFixed(4)}</span></p>`;
+            } else if (shape === 'cylinder') {
+                let vol = Math.PI * v1 * v1 * v2;
+                let sa = 2 * Math.PI * v1 * v2 + 2 * Math.PI * v1 * v1;
+                out = `<p>Shape: Cylinder</p><p>Volume = $\\pi r^2 h$ = <span class="text-emerald-400 font-bold">${vol.toFixed(4)}</span></p><p>Surface Area = <span class="text-emerald-400 font-bold">${sa.toFixed(4)}</span></p>`;
+            } else if (shape === 'sphere') {
+                let vol = (4 / 3) * Math.PI * Math.pow(v1, 3);
+                let sa = 4 * Math.PI * Math.pow(v1, 2);
+                out = `<p>Shape: Sphere</p><p>Volume = $\\frac{4}{3}\\pi r^3$ = <span class="text-emerald-400 font-bold">${vol.toFixed(4)}</span></p><p>Surface Area = <span class="text-emerald-400 font-bold">${sa.toFixed(4)}</span></p>`;
+            } else if (shape === 'cone') {
+                let slant = Math.sqrt(v1 * v1 + v2 * v2);
+                let vol = (1 / 3) * Math.PI * v1 * v1 * v2;
+                let sa = Math.PI * v1 * (v1 + slant);
+                out = `<p>Shape: Cone</p><p>Volume = <span class="text-emerald-400 font-bold">${vol.toFixed(4)}</span></p><p>Total Surface Area = <span class="text-emerald-400 font-bold">${sa.toFixed(4)}</span></p>`;
+            }
+
+            contentDiv.innerHTML = out;
+            saveToHistory("Geometry (" + shape + ")", `v1=${v1}, v2=${v2}`, "Calculated Successfully");
+        }
+
+        // --- FINANCE CALCULATIONS ---
+        function calculateInterest() {
+            const p = parseFloat(document.getElementById('fin-p').value);
+            const r = parseFloat(document.getElementById('fin-r').value);
+            const t = parseFloat(document.getElementById('fin-t').value);
+
+            const si = (p * r * t) / 100;
+            const ci = p * Math.pow((1 + r / 100), t) - p;
+
+            const resDiv = document.getElementById('finance-result');
+            const contentDiv = document.getElementById('finance-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">Investment Breakdown ($${p} at ${r}% for ${t} yrs):</p>
+                <p>Simple Interest Earned: <span class="text-emerald-400 font-bold">$${si.toFixed(2)}</span> (Total: $${(p+si).toFixed(2)})</p>
+                <p>Compound Interest Earned: <span class="text-emerald-400 font-bold">$${ci.toFixed(2)}</span> (Total: $${(p+ci).toFixed(2)})</p>
+            `;
+            saveToHistory("Interest Calculator", `P=${p}, R=${r}%, T=${t}`, `SI: $${si.toFixed(2)}, CI: $${ci.toFixed(2)}`);
+        }
+
+        function calculateEMI() {
+            const p = parseFloat(document.getElementById('emi-p').value);
+            const r = parseFloat(document.getElementById('emi-r').value) / 12 / 100;
+            const n = parseFloat(document.getElementById('emi-n').value);
+
+            const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const totalPayment = emi * n;
+            const totalInterest = totalPayment - p;
+
+            const resDiv = document.getElementById('finance-result');
+            const contentDiv = document.getElementById('finance-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">Loan EMI Breakdown:</p>
+                <p>Monthly EMI: <span class="text-emerald-400 font-bold">$${emi.toFixed(2)}</span></p>
+                <p>Total Interest Payable: <span class="text-emerald-400 font-bold">$${totalInterest.toFixed(2)}</span></p>
+                <p>Total Payment: <span class="text-emerald-400 font-bold">$${totalPayment.toFixed(2)}</span></p>
+            `;
+            saveToHistory("Loan EMI", `P=${p}, R=${(r*12*100).toFixed(1)}%, N=${n}m`, `EMI: $${emi.toFixed(2)}`);
+        }
+
+        function calcPercentage(mode) {
+            const resDiv = document.getElementById('finance-result');
+            const contentDiv = document.getElementById('finance-result-content');
+            resDiv.classList.remove('hidden');
+
+            if (mode === 'part') {
+                const x = parseFloat(document.getElementById('pct-x').value);
+                const y = parseFloat(document.getElementById('pct-y').value);
+                const ans = (x / 100) * y;
+                contentDiv.innerHTML = `<p class="text-emerald-400 font-bold">${x}% of ${y} = ${ans}</p>`;
+                saveToHistory("Percentage Part", `${x}% of ${y}`, `${ans}`);
+            } else {
+                const a = parseFloat(document.getElementById('pct-a').value);
+                const b = parseFloat(document.getElementById('pct-b').value);
+                const change = ((b - a) / a) * 100;
+                contentDiv.innerHTML = `<p class="text-emerald-400 font-bold">Percentage Change = ${change.toFixed(2)}%</p>`;
+                saveToHistory("Percentage Change", `From ${a} to ${b}`, `${change.toFixed(2)}%`);
+            }
+        }
+
+        // --- ADVANCED & GENERAL CALCULATIONS ---
+        function calculateMatrix() {
+            const m00 = parseFloat(document.getElementById('m00').value);
+            const m01 = parseFloat(document.getElementById('m01').value);
+            const m10 = parseFloat(document.getElementById('m10').value);
+            const m11 = parseFloat(document.getElementById('m11').value);
+
+            const det = m00 * m11 - m01 * m10;
+            const trace = m00 + m11;
+
+            const resDiv = document.getElementById('advanced-result');
+            const contentDiv = document.getElementById('advanced-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">Matrix Properties (2x2):</p>
+                <p>Determinant (ad - bc) = <span class="text-emerald-400 font-bold">${det}</span></p>
+                <p>Trace (Sum of main diagonal) = <span class="text-emerald-400 font-bold">${trace}</span></p>
+            `;
+            saveToHistory("Matrix Determinant", `[[${m00},${m01}], [${m10},${m11}]]`, `Det: ${det}`);
+        }
+
+        function calculateGcdLcm() {
+            let a = parseInt(document.getElementById('gcd-a').value);
+            let b = parseInt(document.getElementById('gcd-b').value);
+
+            let gcd = (x, y) => y === 0 ? x : gcd(y, x % y);
+            let g = gcd(a, b);
+            let l = Math.abs(a * b) / g;
+
+            const resDiv = document.getElementById('advanced-result');
+            const contentDiv = document.getElementById('advanced-result-content');
+            resDiv.classList.remove('hidden');
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">GCD & LCM for ${a} and ${b}:</p>
+                <p>GCD (Greatest Common Divisor) = <span class="text-emerald-400 font-bold">${g}</span></p>
+                <p>LCM (Least Common Multiple) = <span class="text-emerald-400 font-bold">${l}</span></p>
+            `;
+            saveToHistory("GCD & LCM", `A=${a}, B=${b}`, `GCD:${g}, LCM:${l}`);
+        }
+
+        function checkPrime() {
+            let n = parseInt(document.getElementById('prime-num').value);
+            const resDiv = document.getElementById('advanced-result');
+            const contentDiv = document.getElementById('advanced-result-content');
+            resDiv.classList.remove('hidden');
+
+            let isPrime = true;
+            if (n <= 1) isPrime = false;
+            for (let i = 2; i <= Math.sqrt(n); i++) {
+                if (n % i === 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+
+            contentDiv.innerHTML = `
+                <p class="text-indigo-400 font-bold">Primality Test:</p>
+                <p class="${isPrime ? 'text-emerald-400' : 'text-rose-400'} font-bold">${n} is ${isPrime ? 'a Prime Number!' : 'not a prime number.'}</p>
+            `;
+            saveToHistory("Prime Checker", `${n}`, isPrime ? 'Prime' : 'Composite');
+        }
+
+        // --- GRAPHING CANVAS PLOTTER ---
+        function plotGraph() {
+            const canvas = document.getElementById('function-canvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.parentElement.clientWidth;
+            const height = canvas.parentElement.clientHeight;
+            
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            const step = 30;
+            for (let x = 0; x < width; x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+            }
+            for (let y = 0; y < height; y += step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+            }
+
+            // Draw X and Y axes
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2); ctx.lineTo(width, height / 2);
+            ctx.moveTo(width / 2, 0); ctx.lineTo(width / 2, height);
+            ctx.stroke();
+
+            // Plot function
+            const funcType = document.getElementById('graph-func-select').value;
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            const scale = 30;
+            const offsetX = width / 2;
+            const offsetY = height / 2;
+
+            for (let px = 0; px < width; px++) {
+                let x = (px - offsetX) / scale;
+                let y = 0;
+
+                if (funcType === 'x2') {
+                    y = (x * x) - 4;
+                } else if (funcType === 'sin') {
+                    y = Math.sin(x) * 3;
+                } else if (funcType === 'cubic') {
+                    y = (0.1 * Math.pow(x, 3)) - (2 * x);
+                } else if (funcType === 'exp') {
+                    y = Math.pow(2, 0.5 * x) - 2;
+                }
+
+                let py = offsetY - (y * scale);
+                if (px === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+
+        window.addEventListener('resize', () => {
+            plotGraph();
+        });
+
+        // Copy Result Helper
+        function copyResult(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            textArea.remove();
+            alert('Result copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
